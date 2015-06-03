@@ -1,7 +1,6 @@
 package com.eldar.NewHireDilemma;
 
 import java.awt.Color;
-//import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -19,7 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public class MainScreen extends JFrame {
-
 	/**
 	 *  
 	 */
@@ -33,7 +31,7 @@ public class MainScreen extends JFrame {
 	
 	private MainScreen me = this;
 	private Corp corp = Corp.getGoodCompany();
-
+	
 	public MainScreen() {
 		this.addComponentListener(new ComponentAdapter() 
 		{  
@@ -114,15 +112,10 @@ public class MainScreen extends JFrame {
 	}
 	
 	private void RunExperiment() {
-		Graphics g;
-	    g = paintPanel.getGraphics();
+		Graphics g = paintPanel.getGraphics();
 	    Dimension d = paintPanel.getSize();
 	    g.clearRect(0, 0, d.width, d.height);
-	    //corp.Draw(g, d.width, d.height);
-	    g.drawString(Integer.toString(d.width), 5, 25);
-	    g.drawString(Integer.toString(d.height), 5, 45);
-        //c.Draw(g, d.height, d.width);		
-        //g.drawString("Noise: " + noiseText.getText(), 5, 15);
+	    corp.Draw(g, d.width, d.height);
 	}
 
 	public static void main(String[] args) {

@@ -2,11 +2,8 @@ package com.eldar.NewHireDilemma;
 
 import java.awt.Color;
 import java.awt.Graphics;
-//import java.util.Random;
 
 public class Team {
-	//protected static Random rand = new Random();
-	
 	public int capacity = 10;
 	public int vacancy = 1;
 	public int quality = 0;  // 0-100
@@ -30,13 +27,17 @@ public class Team {
 		return this;
 	}
 	
-	public void Draw(Graphics g, int x, int y, int width, int height) {
+	public void Draw(Graphics g, int x, int y, int width, int heightGross) {
+	  int height = heightGross - 25;
 	  int rectX = x + margin;
 	  int rectY = y + margin;
 	  int rectW = Math.min(width - 2 * margin, (int)((double)height / capacity)) ;
 	  int rectH = rectW * capacity;
 
-	  g.setColor(Color.BLACK);
+	  int newColor = (int)(255.0 * quality / 100.0);
+	  g.setColor(new Color(newColor, newColor, newColor));
+      g.fillRect(rectX, rectY, rectW, rectH);
+      g.setColor(Color.BLACK);
       g.drawRect(rectX, rectY, rectW, rectH);
       
 	  int memX = rectX + margin;
@@ -48,9 +49,14 @@ public class Team {
 	  for (int i=0; i < occupied; ++i) {
 		  g.fillOval(memX, memY + i * rectW, memW, memW);
 	  }
-	  g.setColor(Color.BLACK);
+	  g.setColor(Color.WHITE);
 	  for (int i=occupied; i < capacity; ++i) {
+		  g.fillOval(memX, memY + i * rectW, memW, memW);
+	  }
+	  g.setColor(Color.BLACK);
+	  for (int i=0; i < capacity; ++i) {
 		  g.drawOval(memX, memY + i * rectW, memW, memW);
 	  }
+	  g.drawString(String.format("%02d", quality), memX, height + 20);
 	}
 }
