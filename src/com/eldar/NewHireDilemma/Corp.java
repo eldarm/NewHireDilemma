@@ -1,35 +1,76 @@
 package com.eldar.NewHireDilemma;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
 public class Corp {
-    public static final int capacity = 10;
-    public static final int vacant = 1;
+    public int capacity = 10;
+    public int vacancy = 1;
 	private static Random rand = new Random();
 
     public Team[] teams;
 
-	private Corp(int teamCount) {
-		teams = new Team[teamCount];
+	protected Corp(int teamsCount, int capacity, int vacancy, int quality) {
+		teams = new Team[teamsCount];
+		this.capacity = capacity;
+		this.vacancy = vacancy;
 		for (int i=0; i < teams.length; ++i) {
-			teams[i] = new Team();
+			teams[i] = new Team(capacity, vacancy, quality);
 		}
 	}
 	
 	public static Corp getGoodCompany() {
-		Corp corp = new Corp(10);
-		for (int i=0; i < corp.teams.length; ++i) {
-			corp.teams[i].setQuality(i < corp.teams.length - 2 ? 90 : 0);
+		return initGoodCompany(new Corp(10, 10, 1, 90));
+	}
+	
+	public static Corp getMixedCompany() {
+		return initMixedCompany(new Corp(10, 10, 1, 0));
+	}
+	
+	public static Corp getPoorCompany() {
+		return new Corp(10, 10, 1, 50);
+	}
+	
+	protected static Corp initGoodCompany(Corp corp) {
+		for (int i=0; i < 2; ++i) {
+			corp.teams[i].setQuality(0);
 		}
 		return corp;
 	}
 	
+	protected static Corp initMixedCompany(Corp corp) {
+		for (int i=0; i < corp.teams.length; ++i) {
+			corp.teams[i].setQuality(i * 10);
+		}
+		return corp;
+	}
+	
+	private void MoveOne(Team oldTeam) {
+		final int compensatorForStupidity = 50;
+		int total = 0;
+		for (int i=0; i < teams.length; i++) {
+			if (teams[i].vacancy > 0) {
+			  total += teams[i].quality + compensatorForStupidity;
+			}
+		}
+		int slotNumber = rand.nextInt(total);
+		for (int i=0; i < teams.length; i++) {
+			Team newTeam = teams[i];
+			if (newTeam.vacancy > 0) {
+				slotNumber -= newTeam.quality + compensatorForStupidity;
+				if (slotNumber < 0) {
+					newTeam.vacancy--;
+					break;
+				}
+			}
+		}
+		oldTeam.vacancy++;
+	}
+	
 	public void Mutate() {
-		// TODO: something real.
-		int i = rand.nextInt(teams.length);
-		if (teams[i].capacity - teams[i].vacancy > 0) teams[i].vacancy++; 
+		for (int i=0; i < teams.length; i++) {
+			MoveOne(teams[i]);
+		}
 	}
 	
 	public void Draw(Graphics g, int width, int height) {
@@ -38,6 +79,16 @@ public class Corp {
 	  for  (int i=0; i < teams.length; ++i) {
 		  teams[i].Draw(g, i * step, 0, step, height);
 	  }
+	  // Calculate the expectation for a new hire:
+	  int total = 0;
+	  int vacancy = 0;
+      for (Team team : teams) {
+    	  total += team.quality * team.vacancy;
+    	  vacancy += team.vacancy;
+      }
+      int expectation = total / vacancy;
+      g.clearRect(5, 5, 200, 20);
+      g.drawString(String.format("Expected quality: %d", expectation), 7, 21);
 	  Mutate();
 	}
 }

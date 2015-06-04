@@ -68,10 +68,41 @@ public class MainScreen extends JFrame {
        
        // Select model:
        modelCombo = new JComboBox();
-       modelCombo.addItem("TopDown");  // #0
-       modelCombo.addItem("BottomUp");  // #1
+       modelCombo.addItem("Good");   // #0
+       modelCombo.addItem("Mixed");  // #1
+       modelCombo.addItem("Poor");   // #2
+       modelCombo.addItem("GoodX");  // #3
+       modelCombo.addItem("MixedX"); // #4
        controlPanel.add(modelCombo);
 
+       // Reset button.
+       JButton resetButton = new JButton("Reset");
+       resetButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent event) {
+        	   switch (me.modelCombo.getSelectedIndex()) {
+           	   default:
+           	   case 0:
+        		   corp = Corp.getGoodCompany();
+        		   break;
+           	   case 1:
+        		   corp = Corp.getMixedCompany();
+        		   break;
+           	   case 2:
+        		   corp = Corp.getPoorCompany();
+        		   break;
+           	   case 3:
+        		   corp = CorpWithExtinction.getGoodCompany();
+        		   break;
+           	   case 4:
+        		   corp = CorpWithExtinction.getMixedCompany();
+        		   break;  
+        	   }
+        	   RunExperiment();
+          }
+       });
+       controlPanel.add(resetButton);		
+       
        // Run button.
        JButton runButton = new JButton("Run");
        runButton.addActionListener(new ActionListener() {
@@ -124,6 +155,7 @@ public class MainScreen extends JFrame {
 			public void run() {
 				MainScreen ms = new MainScreen();
 				ms.setVisible(true);
+				ms.RunExperiment();
 			}
 		});
 	}

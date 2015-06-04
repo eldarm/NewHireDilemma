@@ -10,7 +10,11 @@ public class Team {
 	
 	public static final int margin = 5;
 	
-	public Team() {}
+	public Team(int capacity, int vacancy, int quality) {
+		this.capacity = capacity;
+		this.vacancy = vacancy;
+		this.quality = quality;
+	}
 	
 	public Team setCapacity(int capacity) {
 		this.capacity = capacity;
