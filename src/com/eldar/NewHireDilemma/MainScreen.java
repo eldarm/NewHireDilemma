@@ -10,11 +10,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public class MainScreen extends JFrame {
@@ -25,9 +24,8 @@ public class MainScreen extends JFrame {
 	private JPanel paintPanel;
 	private JPanel controlPanel;
 	private JPanel globalPanel;
-	private JTextField depthText;
-	private JTextField noiseText;
 	private JComboBox modelCombo;
+    private JCheckBox colorCheck;
 	
 	private MainScreen me = this;
 	private Corp corp = Corp.getGoodCompany();
@@ -52,20 +50,6 @@ public class MainScreen extends JFrame {
        controlPanel.setBackground(Color.BLUE);
        globalPanel.add(controlPanel);
        
-       // Depth:
-       JLabel depthLabel = new JLabel("Depth:");
-       depthLabel.setForeground(Color.YELLOW);
-       controlPanel.add(depthLabel);
-       depthText = new JTextField(" 5");
-       controlPanel.add(depthText);
-
-       // Noise:
-       JLabel noiseLabel = new JLabel("Noise:");
-       noiseLabel.setForeground(Color.YELLOW);
-       controlPanel.add(noiseLabel);
-       noiseText = new JTextField("20.0");
-       controlPanel.add(noiseText);
-       
        // Select model:
        modelCombo = new JComboBox();
        modelCombo.addItem("Good");   // #0
@@ -74,6 +58,12 @@ public class MainScreen extends JFrame {
        modelCombo.addItem("GoodX");  // #3
        modelCombo.addItem("MixedX"); // #4
        controlPanel.add(modelCombo);
+       
+       colorCheck = new JCheckBox();
+       colorCheck.setText("Colored?");
+       colorCheck.setForeground(Color.YELLOW);
+       colorCheck.setSelected(false);
+       controlPanel.add(colorCheck);
 
        // Reset button.
        JButton resetButton = new JButton("Reset");
@@ -143,6 +133,7 @@ public class MainScreen extends JFrame {
 	}
 	
 	private void RunExperiment() {
+		Team.colorVersion = colorCheck.isSelected();
 		Graphics g = paintPanel.getGraphics();
 	    Dimension d = paintPanel.getSize();
 	    g.clearRect(0, 0, d.width, d.height);

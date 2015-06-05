@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Team {
+	public static Boolean colorVersion = false;
 	public int capacity = 10;
 	public int vacancy = 1;
 	public int quality = 0;  // 0-100
@@ -31,16 +32,21 @@ public class Team {
 		return this;
 	}
 	
-	public void Draw(Graphics g, int x, int y, int width, int heightGross) {
-	  int height = heightGross - 25;
+	public void Draw(Graphics g, int x, int y, int width, int heightTotal) {
+	  int textSpace = 20;
+	  int height = heightTotal - textSpace - 2;
 	  int rectX = x + margin;
-	  int rectY = y + margin;
+	  int rectY = y + margin + textSpace;
 	  int rectW = Math.min(width - 2 * margin, (int)((double)height / capacity)) ;
 	  int rectH = rectW * capacity;
 
 	  int newColor = (int)(255.0 * quality / 100.0);
-	  g.setColor(new Color(newColor, newColor, newColor));
-      g.fillRect(rectX, rectY, rectW, rectH);
+	  if (colorVersion) {
+		  g.setColor(new Color(255 - newColor, newColor, 0));  
+	  } else {
+		  g.setColor(new Color(newColor, newColor, newColor));  
+	  }
+	  g.fillRect(rectX, rectY, rectW, rectH);
       g.setColor(Color.BLACK);
       g.drawRect(rectX, rectY, rectW, rectH);
       
@@ -61,6 +67,6 @@ public class Team {
 	  for (int i=0; i < capacity; ++i) {
 		  g.drawOval(memX, memY + i * rectW, memW, memW);
 	  }
-	  g.drawString(String.format("%02d", quality), memX, height + 20);
+	  g.drawString(String.format("%02d", quality), memX, y + textSpace - 3);
 	}
 }

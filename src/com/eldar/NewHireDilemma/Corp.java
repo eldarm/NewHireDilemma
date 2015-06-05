@@ -73,11 +73,13 @@ public class Corp {
 		}
 	}
 	
-	public void Draw(Graphics g, int width, int height) {
-	  g.clearRect(0, 0, width, height);
+	public void Draw(Graphics g, int width, int heightTotal) {
+	  g.clearRect(0, 0, width, heightTotal);
+	  final int textSpace = 20;
+	  int height = heightTotal - textSpace;
 	  final int step = Math.min(width / teams.length, (height - 2) / capacity + Team.margin * 2);
 	  for  (int i=0; i < teams.length; ++i) {
-		  teams[i].Draw(g, i * step, 0, step, height);
+		  teams[i].Draw(g, i * step, textSpace, step, height);
 	  }
 	  // Calculate the expectation for a new hire:
 	  int total = 0;
@@ -87,8 +89,7 @@ public class Corp {
     	  vacancy += team.vacancy;
       }
       int expectation = total / vacancy;
-      g.clearRect(5, 5, 200, 20);
-      g.drawString(String.format("Expected quality: %d", expectation), 7, 21);
+      g.drawString(String.format("Expected quality: %d", expectation), 7, textSpace - 3);
 	  Mutate();
 	}
 }
