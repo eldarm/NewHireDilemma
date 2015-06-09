@@ -2,11 +2,16 @@ package com.eldar.NewHireDilemma;
 
 import java.awt.Graphics;
 import java.util.Random;
+import java.util.ArrayDeque;
 
 public class Corp {
     public int capacity = 10;
     public int vacancy = 1;
 	private static Random rand = new Random();
+	private static final int MovingAverageWindows = 100;
+	private ArrayDeque<Integer> values = new ArrayDeque(MovingAverageWindows);
+	private int expectation = 0;
+	private int averageExpectation = 0;
 
     public Team[] teams;
 
@@ -73,6 +78,22 @@ public class Corp {
 		}
 	}
 	
+	private void updateExpectations() {
+	  // Calculate the expectation for a new hire:
+	  int total = 0;
+	  int vacancy = 0;
+      for (Team team : teams) {
+    	  total += team.quality * team.vacancy;
+    	  vacancy += team.vacancy;
+      }
+      expectation = total / vacancy;
+      if (values.size() > MovingAverageWindows) values.poll();
+      values.add(expectation);
+      int sum = 0;
+      for (Integer e : values) sum += e;
+      averageExpectation = sum/values.size();
+ 	}
+	
 	public void Draw(Graphics g, int width, int heightTotal) {
 	  g.clearRect(0, 0, width, heightTotal);
 	  final int textSpace = 20;
@@ -81,15 +102,8 @@ public class Corp {
 	  for  (int i=0; i < teams.length; ++i) {
 		  teams[i].Draw(g, i * step, textSpace, step, height);
 	  }
-	  // Calculate the expectation for a new hire:
-	  int total = 0;
-	  int vacancy = 0;
-      for (Team team : teams) {
-    	  total += team.quality * team.vacancy;
-    	  vacancy += team.vacancy;
-      }
-      int expectation = total / vacancy;
-      g.drawString(String.format("Expected quality: %d", expectation), 7, textSpace - 3);
+      updateExpectations();
+      g.drawString(String.format("Expected quality: %d (average %d)", expectation, averageExpectation), 7, textSpace - 3);
 	  Mutate();
 	}
 }
