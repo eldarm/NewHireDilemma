@@ -104,15 +104,15 @@ public class MainScreen extends JFrame {
        controlPanel.add(runButton);		
        
        // Run button.
-       JButton run100Button = new JButton("Run 100");
-       run100Button.addActionListener(new ActionListener() {
+       JButton runALot = new JButton("Run 100");
+       runALot.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent event) {
         	   for (int i=0; i<100; i++) corp.Mutate();
         	   RunExperiment();
           }
        });
-       controlPanel.add(run100Button);		
+       controlPanel.add(runALot);		
        
        // Quit button.
        JButton quitButton = new JButton("Quit");

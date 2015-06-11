@@ -8,8 +8,8 @@ public class Corp {
     public int capacity = 10;
     public int vacancy = 1;
 	private static Random rand = new Random();
-	private static final int MovingAverageWindows = 100;
-	private ArrayDeque<Integer> values = new ArrayDeque(MovingAverageWindows);
+	private static final int MovingAverageWindows = 1000;
+	private ArrayDeque<Integer> values = new ArrayDeque<Integer>(MovingAverageWindows);
 	private int expectation = 0;
 	private int averageExpectation = 0;
 
@@ -22,6 +22,7 @@ public class Corp {
 		for (int i=0; i < teams.length; ++i) {
 			teams[i] = new Team(capacity, vacancy, quality);
 		}
+        updateExpectations();
 	}
 	
 	public static Corp getGoodCompany() {
@@ -76,6 +77,7 @@ public class Corp {
 		for (int i=0; i < teams.length; i++) {
 			MoveOne(teams[i]);
 		}
+        updateExpectations();
 	}
 	
 	private void updateExpectations() {
@@ -102,7 +104,6 @@ public class Corp {
 	  for  (int i=0; i < teams.length; ++i) {
 		  teams[i].Draw(g, i * step, textSpace, step, height);
 	  }
-      updateExpectations();
       g.drawString(String.format("Expected quality: %d (average %d)", expectation, averageExpectation), 7, textSpace - 3);
 	  Mutate();
 	}
