@@ -3,8 +3,11 @@ package com.eldar.NewHireDilemma;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.ArrayDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Corp {
+	public static Logger logger = Logger.getLogger("Corp");
     public int capacity = 10;
     public int vacancy = 1;
 	private static Random rand = new Random();
@@ -51,32 +54,54 @@ public class Corp {
 		return corp;
 	}
 	
-	private void MoveOne(Team oldTeam) {
-		final int compensatorForStupidity = 50;
+//	private void MoveOne(Team oldTeam) {
+//		final int compensatorForStupidity = 50;
+//		int total = 0;
+//		for (int i=0; i < teams.length; i++) {
+//			if (teams[i].vacancy > 0) {
+//			  total += teams[i].quality + compensatorForStupidity;
+//			}
+//		}
+//		int slotNumber = rand.nextInt(total);
+//		for (int i=0; i < teams.length; i++) {
+//			Team newTeam = teams[i];
+//			if (newTeam.vacancy > 0) {
+//				slotNumber -= newTeam.quality + compensatorForStupidity;
+//				if (slotNumber < 0) {
+//					newTeam.vacancy--;
+//					break;
+//				}
+//			}
+//		}
+//		oldTeam.vacancy++;
+//	}
+	private Team PickOne(boolean byQuality) {
 		int total = 0;
 		for (int i=0; i < teams.length; i++) {
-			if (teams[i].vacancy > 0) {
-			  total += teams[i].quality + compensatorForStupidity;
+			if (teams[i].getAvailability(byQuality)) {
+			  total += teams[i].getMetric(byQuality);
 			}
 		}
 		int slotNumber = rand.nextInt(total);
+		logger.log(Level.INFO, String.format("Picked %s team %d out of %d.", (byQuality ? "good" : "mean"), slotNumber, total));
 		for (int i=0; i < teams.length; i++) {
-			Team newTeam = teams[i];
-			if (newTeam.vacancy > 0) {
-				slotNumber -= newTeam.quality + compensatorForStupidity;
+			Team selectedTeam = teams[i];
+			if (selectedTeam.getAvailability(byQuality)) {
+				slotNumber -= selectedTeam.getMetric(byQuality);
 				if (slotNumber < 0) {
-					newTeam.vacancy--;
-					break;
+					return selectedTeam;
 				}
 			}
 		}
-		oldTeam.vacancy++;
+		assert false : "PickOne method has a bug.";
+		return null;
 	}
 	
 	public void Mutate() {
-		for (int i=0; i < teams.length; i++) {
-			MoveOne(teams[i]);
-		}
+		Team oldTeam = PickOne(false);
+		Team newTeam = PickOne(true);
+		oldTeam.vacancy++;
+		newTeam.vacancy--;
         updateExpectations();
 	}
 	

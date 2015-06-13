@@ -32,6 +32,26 @@ public class Team {
 		return this;
 	}
 	
+	/**
+	 * Converts quality into a metric, suitable for random distribution
+	 * somewhere between n > 0 and n+100.
+	 * @param getQuality - use quality as a base, otherwise use meanness = 100 - quality.
+	 * @return
+	 */
+	public int getMetric(boolean getQuality) {
+		final int compensatorForStupidity = 50;
+		return (getQuality ? quality : 100 - quality) + compensatorForStupidity;
+	}
+	
+	/**
+	 * Is team available to come to, or to leave?
+	 * @param toCome the team must have vacancy to come, or someone in it, to leave.
+	 * @return
+	 */
+	public boolean getAvailability(boolean toCome) {
+		return toCome ? vacancy > 0 : vacancy < capacity;
+	}
+	
 	public void Draw(Graphics g, int x, int y, int width, int heightTotal) {
 	  int textSpace = 20;
 	  int height = heightTotal - textSpace - 2;
@@ -55,7 +75,7 @@ public class Team {
 	  int memY = rectY + margin;
 	  
 	  int occupied = capacity - vacancy;
-	  g.setColor(Color.BLUE);
+	  g.setColor(colorVersion ? Color.BLUE : Color.GRAY);
 	  for (int i=0; i < occupied; ++i) {
 		  g.fillOval(memX, memY + i * rectW, memW, memW);
 	  }
